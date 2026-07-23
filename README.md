@@ -1,38 +1,117 @@
-# Freshworks Magento Connector Extension
+# Magento 2 Freshdesk Connector Extension
 
 Companion Magento 2 module for the Freshdesk Magento connector.
 
-## Install in a Magento 2 store
+This extension listens for Magento 2 customer and order events and sends them to the Freshdesk app's external-event callback URL. The Freshdesk app then creates or updates contacts and can create tickets for new customers or orders.
 
-Copy `Freshworks/MagentoConnector` into `app/code/Freshworks/MagentoConnector`, then run:
+## Install From GitHub
+
+From the Magento 2 project root, run:
+
+```bash
+mkdir -p app/code/Freshworks
+git clone https://github.com/Akashramsankar/magento2-freshdesk-connector.git app/code/Freshworks/MagentoConnector
+
+bin/magento module:enable Freshworks_MagentoConnector
+bin/magento setup:upgrade
+bin/magento setup:di:compile
+bin/magento cache:flush
+```
+
+## Install In DDEV
+
+From the DDEV Magento 2 project root, run:
+
+```bash
+mkdir -p app/code/Freshworks
+git clone https://github.com/Akashramsankar/magento2-freshdesk-connector.git app/code/Freshworks/MagentoConnector
+
+ddev magento module:enable Freshworks_MagentoConnector
+ddev magento setup:upgrade
+ddev magento setup:di:compile
+ddev magento cache:flush
+```
+
+## Manual Install
+
+Copy this repository into `app/code/Freshworks/MagentoConnector`, then run:
 
 ```bash
 bin/magento module:enable Freshworks_MagentoConnector
 bin/magento setup:upgrade
+bin/magento setup:di:compile
 bin/magento cache:flush
 ```
 
-For Composer packaging, publish this module folder as `freshworks/magento2-connector` and install it with:
+## Composer Install
+
+If this module is published to a Composer repository as `freshworks/magento2-connector`, install it with:
 
 ```bash
 composer require freshworks/magento2-connector
 bin/magento module:enable Freshworks_MagentoConnector
 bin/magento setup:upgrade
+bin/magento setup:di:compile
 bin/magento cache:flush
 ```
 
 ## Configure
 
-In Magento Admin, open `Stores > Configuration > Services > Freshworks Connector`.
+In Magento Admin, open:
+
+`Stores > Configuration > Services > Freshworks Connector`
 
 Set:
 
-- `Enable Event Sync`: Yes
+- `Enable Event Sync`: `Yes`
 - `Freshworks Callback URL`: the URL shown by the Freshdesk app's `Reconnect Sync` action
-- Enable the customer/order event toggles you need
+- `Shared Secret`: optional, but recommended when the Freshdesk app is configured to verify signatures
+- `Send Customer Created Events`: `Yes`
+- `Send Customer Updated Events`: `Yes`, if contact updates should sync
+- `Send Order Created Events`: `Yes`
 
-When enabled, the module sends these events to Freshworks:
+Save config and flush cache:
+
+```bash
+bin/magento cache:flush
+```
+
+For DDEV:
+
+```bash
+ddev magento cache:flush
+```
+
+## Freshdesk App Setup
+
+In the Freshdesk app settings:
+
+1. Connect and verify the Magento store.
+2. Enable the sync options you need:
+   - Create/update contact when customer is created or updated
+   - Create ticket when customer is created
+   - Create ticket when order is created
+3. Click `Reconnect Sync`.
+4. Copy the callback URL from the success message.
+5. Paste that URL into Magento Admin under `Freshworks Callback URL`.
+
+## Events Sent
+
+When enabled, this extension sends:
 
 - `customer.created`
 - `customer.updated`
 - `order.created`
+
+Each event is sent as a JSON `POST` request with these headers:
+
+- `X-Magento-Topic`
+- `X-Magento-Source`
+- `X-Freshworks-Magento-Version`
+- `X-Freshworks-Magento-Signature`, when a shared secret is configured
+
+## Test The Setup
+
+After configuration, create a new Magento customer or place a new order. Then check Freshdesk for the expected contact update or ticket.
+
+For local DDEV testing, make sure your Magento store is reachable from Freshdesk through a public HTTPS tunnel before testing hosted app webhooks.
