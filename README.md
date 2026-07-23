@@ -94,8 +94,8 @@ In the Freshdesk app settings:
    - Create ticket when customer is created
    - Create ticket when order is created
 4. Click `Reconnect Sync`.
-5. Copy the callback URL from the success message.
-6. Paste that URL into Magento Admin under `Freshworks Callback URL`.
+
+The Freshdesk app will try to install the callback URL into this Magento extension automatically. If automatic installation fails, copy the callback URL from the success message and paste it into Magento Admin under `Freshworks Callback URL`.
 
 The Freshdesk app also supports native Magento admin/integration access tokens. When verifying a store, it first checks this extension's `/freshworks/ping` endpoint. If that endpoint is unavailable, it falls back to native Magento REST verification.
 
@@ -113,6 +113,8 @@ The generated Magento API token protects these endpoints:
 - `POST /rest/<store-code>/V1/freshworks/orders/:orderId/comments`
 - `GET /rest/<store-code>/V1/freshworks/orders/:orderId/shipments`
 - `POST /rest/<store-code>/V1/freshworks/orders/:orderId/cancel`
+- `POST /rest/<store-code>/V1/freshworks/webhook/install`
+- `POST /rest/<store-code>/V1/freshworks/webhook/uninstall`
 
 Send the token as:
 

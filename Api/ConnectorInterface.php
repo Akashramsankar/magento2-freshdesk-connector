@@ -78,4 +78,16 @@ interface ConnectorInterface
      * @return bool
      */
     public function cancelOrder(string $orderId): bool;
+
+    /**
+     * @param string $deliveryUrl
+     * @param string|null $sharedSecret
+     * @return bool
+     */
+    public function installWebhook(string $deliveryUrl, ?string $sharedSecret = null): bool;
+
+    /**
+     * @return bool
+     */
+    public function uninstallWebhook(): bool;
 }

@@ -60,4 +60,16 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <route url="/V1/freshworks/webhook/install" method="POST">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="installWebhook"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/webhook/uninstall" method="POST">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="uninstallWebhook"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>

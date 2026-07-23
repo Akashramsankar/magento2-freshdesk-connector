@@ -5,6 +5,7 @@ namespace Freshworks\MagentoConnector\Model;
 use Freshworks\MagentoConnector\Api\ConnectorInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\GroupRepositoryInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Api\SortOrderBuilder;
@@ -16,6 +17,10 @@ use Magento\Sales\Model\Order\ShipmentRepository;
 
 class Connector implements ConnectorInterface
 {
+    private const XML_PATH_ENABLED = 'freshworks_connector/events/enabled';
+    private const XML_PATH_CALLBACK_URL = 'freshworks_connector/events/callback_url';
+    private const XML_PATH_SHARED_SECRET = 'freshworks_connector/events/shared_secret';
+
     /**
      * @var ApiTokenValidator
      */
@@ -47,6 +52,11 @@ class Connector implements ConnectorInterface
     private $shipmentRepository;
 
     /**
+     * @var WriterInterface
+     */
+    private $configWriter;
+
+    /**
      * @var SearchCriteriaBuilder
      */
     private $searchCriteriaBuilder;
@@ -63,6 +73,7 @@ class Connector implements ConnectorInterface
         OrderRepositoryInterface $orderRepository,
         OrderManagementInterface $orderManagement,
         ShipmentRepository $shipmentRepository,
+        WriterInterface $configWriter,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         SortOrderBuilder $sortOrderBuilder
     ) {
@@ -72,6 +83,7 @@ class Connector implements ConnectorInterface
         $this->orderRepository = $orderRepository;
         $this->orderManagement = $orderManagement;
         $this->shipmentRepository = $shipmentRepository;
+        $this->configWriter = $configWriter;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->sortOrderBuilder = $sortOrderBuilder;
     }
@@ -250,6 +262,29 @@ class Connector implements ConnectorInterface
         $this->tokenValidator->validate();
         $order = $this->loadOrder($orderId);
         return (bool) $this->orderManagement->cancel((int) $order->getEntityId());
+    }
+
+    public function installWebhook(string $deliveryUrl, ?string $sharedSecret = null): bool
+    {
+        $this->tokenValidator->validate();
+        $normalizedUrl = $this->normalizeText($deliveryUrl);
+        if ($normalizedUrl === '' || !preg_match('/^https:\/\//i', $normalizedUrl)) {
+            return false;
+        }
+
+        $this->configWriter->save(self::XML_PATH_ENABLED, '1');
+        $this->configWriter->save(self::XML_PATH_CALLBACK_URL, $normalizedUrl);
+        if ($this->normalizeText($sharedSecret) !== '') {
+            $this->configWriter->save(self::XML_PATH_SHARED_SECRET, $this->normalizeText($sharedSecret));
+        }
+        return true;
+    }
+
+    public function uninstallWebhook(): bool
+    {
+        $this->tokenValidator->validate();
+        $this->configWriter->save(self::XML_PATH_CALLBACK_URL, '');
+        return true;
     }
 
     private function freshSearchCriteriaBuilder(int $pageSize): SearchCriteriaBuilder
