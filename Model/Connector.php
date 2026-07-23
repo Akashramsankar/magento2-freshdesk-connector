@@ -20,6 +20,9 @@ class Connector implements ConnectorInterface
     private const XML_PATH_ENABLED = 'freshworks_connector/events/enabled';
     private const XML_PATH_CALLBACK_URL = 'freshworks_connector/events/callback_url';
     private const XML_PATH_SHARED_SECRET = 'freshworks_connector/events/shared_secret';
+    private const XML_PATH_SEND_CUSTOMER_CREATED = 'freshworks_connector/events/send_customer_created';
+    private const XML_PATH_SEND_CUSTOMER_UPDATED = 'freshworks_connector/events/send_customer_updated';
+    private const XML_PATH_SEND_ORDER_CREATED = 'freshworks_connector/events/send_order_created';
 
     /**
      * @var ApiTokenValidator
@@ -274,6 +277,9 @@ class Connector implements ConnectorInterface
 
         $this->configWriter->save(self::XML_PATH_ENABLED, '1');
         $this->configWriter->save(self::XML_PATH_CALLBACK_URL, $normalizedUrl);
+        $this->configWriter->save(self::XML_PATH_SEND_CUSTOMER_CREATED, '1');
+        $this->configWriter->save(self::XML_PATH_SEND_CUSTOMER_UPDATED, '1');
+        $this->configWriter->save(self::XML_PATH_SEND_ORDER_CREATED, '1');
         if ($this->normalizeText($sharedSecret) !== '') {
             $this->configWriter->save(self::XML_PATH_SHARED_SECRET, $this->normalizeText($sharedSecret));
         }

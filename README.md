@@ -63,15 +63,12 @@ In Magento Admin, open:
 
 Set:
 
-- `Enable Event Sync`: `Yes`
 - `Magento API Token`: click `Generate new token`, then save config
-- `Freshworks Callback URL`: normally filled automatically by the Freshdesk app after app settings are saved
 - `Shared Secret`: optional, but recommended when the Freshdesk app is configured to verify signatures
-- `Send Customer Created Events`: `Yes`
-- `Send Customer Updated Events`: `Yes`, if contact updates should sync
-- `Send Order Created Events`: `Yes`
 
-Save config and flush cache:
+The Freshdesk app fills the callback URL and enables event delivery automatically after app settings are saved. Use the Magento event fields only if you need to inspect or manually repair webhook delivery.
+
+Save config after generating the token. If Magento cache is enabled, flush cache:
 
 ```bash
 bin/magento cache:flush
