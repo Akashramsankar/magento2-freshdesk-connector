@@ -1,0 +1,37 @@
+<?php
+/** @var \Freshworks\MagentoConnector\Block\Adminhtml\System\Config\GenerateTokenButton $block */
+?>
+<button type="button" class="action-default" id="freshworks-generate-api-token">
+    <span><?= $block->escapeHtml(__('Generate new token')) ?></span>
+</button>
+<span id="freshworks-generate-api-token-message" style="margin-left: 8px;"></span>
+<script>
+require(['jquery'], function ($) {
+    $('#freshworks-generate-api-token').on('click', function () {
+        var button = $(this);
+        var message = $('#freshworks-generate-api-token-message');
+        button.prop('disabled', true);
+        message.text('<?= $block->escapeJs(__('Generating...')) ?>');
+
+        $.ajax({
+            url: '<?= $block->escapeUrl($block->getAjaxUrl()) ?>',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                form_key: window.FORM_KEY
+            }
+        }).done(function (response) {
+            if (response && response.success && response.token) {
+                $('#' + '<?= $block->escapeJs($block->getTokenFieldId()) ?>').val(response.token);
+                message.text('<?= $block->escapeJs(__('Token generated. Save configuration to keep it.')) ?>');
+            } else {
+                message.text(response && response.message ? response.message : '<?= $block->escapeJs(__('Unable to generate token.')) ?>');
+            }
+        }).fail(function () {
+            message.text('<?= $block->escapeJs(__('Unable to generate token.')) ?>');
+        }).always(function () {
+            button.prop('disabled', false);
+        });
+    });
+});
+</script>

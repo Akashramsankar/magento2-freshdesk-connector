@@ -2,7 +2,7 @@
 
 Companion Magento 2 module for the Freshdesk Magento connector.
 
-This extension listens for Magento 2 customer and order events and sends them to the Freshdesk app's external-event callback URL. The Freshdesk app then creates or updates contacts and can create tickets for new customers or orders.
+This extension prepares Magento 2 customer/order data for the Freshdesk connector app, provides a Magento-generated API token, and sends customer/order events to the Freshdesk app's external-event callback URL. The Freshdesk app can display Magento data on tickets, create or update contacts, and create tickets for new customers or orders.
 
 ## Install From GitHub
 
@@ -64,6 +64,7 @@ In Magento Admin, open:
 Set:
 
 - `Enable Event Sync`: `Yes`
+- `Magento API Token`: click `Generate new token`, then save config
 - `Freshworks Callback URL`: the URL shown by the Freshdesk app's `Reconnect Sync` action
 - `Shared Secret`: optional, but recommended when the Freshdesk app is configured to verify signatures
 - `Send Customer Created Events`: `Yes`
@@ -87,13 +88,37 @@ ddev magento cache:flush
 In the Freshdesk app settings:
 
 1. Connect and verify the Magento store.
-2. Enable the sync options you need:
+2. Paste the token generated in Magento into the `Magento API Token` field.
+3. Enable the sync options you need:
    - Create/update contact when customer is created or updated
    - Create ticket when customer is created
    - Create ticket when order is created
-3. Click `Reconnect Sync`.
-4. Copy the callback URL from the success message.
-5. Paste that URL into Magento Admin under `Freshworks Callback URL`.
+4. Click `Reconnect Sync`.
+5. Copy the callback URL from the success message.
+6. Paste that URL into Magento Admin under `Freshworks Callback URL`.
+
+The Freshdesk app also supports native Magento admin/integration access tokens. When verifying a store, it first checks this extension's `/freshworks/ping` endpoint. If that endpoint is unavailable, it falls back to native Magento REST verification.
+
+## Extension API Endpoints
+
+The generated Magento API token protects these endpoints:
+
+- `GET /rest/<store-code>/V1/freshworks/ping`
+- `GET /rest/<store-code>/V1/freshworks/customers`
+- `GET /rest/<store-code>/V1/freshworks/customers/:customerId`
+- `GET /rest/<store-code>/V1/freshworks/customer-groups/:groupId`
+- `GET /rest/<store-code>/V1/freshworks/orders`
+- `GET /rest/<store-code>/V1/freshworks/orders/:orderId`
+- `GET /rest/<store-code>/V1/freshworks/orders/:orderId/comments`
+- `POST /rest/<store-code>/V1/freshworks/orders/:orderId/comments`
+- `GET /rest/<store-code>/V1/freshworks/orders/:orderId/shipments`
+- `POST /rest/<store-code>/V1/freshworks/orders/:orderId/cancel`
+
+Send the token as:
+
+```text
+Authorization: Bearer <Magento API Token>
+```
 
 ## Events Sent
 

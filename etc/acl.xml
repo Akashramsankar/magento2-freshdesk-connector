@@ -8,6 +8,7 @@
                         <resource id="Magento_Config::config">
                             <resource id="Freshworks_MagentoConnector::config" title="Freshworks Connector Configuration" sortOrder="900"/>
                         </resource>
+                        <resource id="Freshworks_MagentoConnector::token" title="Generate Freshworks Connector API Token" sortOrder="910"/>
                     </resource>
                 </resource>
             </resource>

@@ -3,11 +3,13 @@
 namespace Freshworks\MagentoConnector\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Store\Model\ScopeInterface;
 
 class Config
 {
     private const XML_PATH_ENABLED = 'freshworks_connector/events/enabled';
+    private const XML_PATH_API_TOKEN = 'freshworks_connector/events/api_token';
     private const XML_PATH_CALLBACK_URL = 'freshworks_connector/events/callback_url';
     private const XML_PATH_SHARED_SECRET = 'freshworks_connector/events/shared_secret';
     private const XML_PATH_SEND_CUSTOMER_CREATED = 'freshworks_connector/events/send_customer_created';
@@ -19,9 +21,15 @@ class Config
      */
     private $scopeConfig;
 
-    public function __construct(ScopeConfigInterface $scopeConfig)
+    /**
+     * @var EncryptorInterface
+     */
+    private $encryptor;
+
+    public function __construct(ScopeConfigInterface $scopeConfig, EncryptorInterface $encryptor)
     {
         $this->scopeConfig = $scopeConfig;
+        $this->encryptor = $encryptor;
     }
 
     public function isEnabled(?int $storeId = null): bool
@@ -34,9 +42,14 @@ class Config
         return trim((string) $this->getValue(self::XML_PATH_CALLBACK_URL, $storeId));
     }
 
+    public function getApiToken(?int $storeId = null): string
+    {
+        return $this->getSecretValue(self::XML_PATH_API_TOKEN, $storeId);
+    }
+
     public function getSharedSecret(?int $storeId = null): string
     {
-        return trim((string) $this->getValue(self::XML_PATH_SHARED_SECRET, $storeId));
+        return $this->getSecretValue(self::XML_PATH_SHARED_SECRET, $storeId);
     }
 
     public function shouldSendCustomerCreated(?int $storeId = null): bool
@@ -57,6 +70,21 @@ class Config
     private function getValue(string $path, ?int $storeId = null): ?string
     {
         return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $storeId);
+    }
+
+    private function getSecretValue(string $path, ?int $storeId = null): string
+    {
+        $value = trim((string) $this->getValue($path, $storeId));
+        if ($value === '') {
+            return '';
+        }
+
+        try {
+            $decrypted = $this->encryptor->decrypt($value);
+            return trim((string) $decrypted) ?: $value;
+        } catch (\Throwable $exception) {
+            return $value;
+        }
     }
 
     private function isFlagSet(string $path, ?int $storeId = null): bool

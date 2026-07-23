@@ -19,7 +19,17 @@
                         <field id="enabled">1</field>
                     </depends>
                 </field>
-                <field id="shared_secret" translate="label comment" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="api_token" translate="label comment" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Magento API Token</label>
+                    <comment>Copy this token into the Magento API Token field in the Freshdesk app settings.</comment>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="generate_api_token" translate="label comment" type="button" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Generate API Token</label>
+                    <frontend_model>Freshworks\MagentoConnector\Block\Adminhtml\System\Config\GenerateTokenButton</frontend_model>
+                    <comment>Generates a random token and fills the Magento API Token field. Save configuration after generating.</comment>
+                </field>
+                <field id="shared_secret" translate="label comment" type="obscure" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Shared Secret</label>
                     <comment>Optional. Sent with every event for request verification.</comment>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
@@ -27,21 +37,21 @@
                         <field id="enabled">1</field>
                     </depends>
                 </field>
-                <field id="send_customer_created" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="send_customer_created" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Send Customer Created Events</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="enabled">1</field>
                     </depends>
                 </field>
-                <field id="send_customer_updated" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="send_customer_updated" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Send Customer Updated Events</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="enabled">1</field>
                     </depends>
                 </field>
-                <field id="send_order_created" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="send_order_created" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Send Order Created Events</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>

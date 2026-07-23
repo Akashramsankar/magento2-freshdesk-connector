@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/freshworks/ping" method="GET">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="ping"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/customers" method="GET">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="getCustomers"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/customers/:customerId" method="GET">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="getCustomer"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/customer-groups/:groupId" method="GET">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="getCustomerGroup"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/orders" method="GET">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="getOrders"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/orders/:orderId" method="GET">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="getOrder"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/orders/:orderId/comments" method="GET">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="getOrderComments"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/orders/:orderId/comments" method="POST">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="addOrderComment"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/orders/:orderId/shipments" method="GET">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="getOrderShipments"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/freshworks/orders/:orderId/cancel" method="POST">
+        <service class="Freshworks\MagentoConnector\Api\ConnectorInterface" method="cancelOrder"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+</routes>

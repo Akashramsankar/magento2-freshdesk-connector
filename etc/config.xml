@@ -4,6 +4,7 @@
         <freshworks_connector>
             <events>
                 <enabled>0</enabled>
+                <api_token/>
                 <callback_url/>
                 <shared_secret/>
                 <send_customer_created>1</send_customer_created>
