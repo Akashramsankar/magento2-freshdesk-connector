@@ -65,7 +65,7 @@ Set:
 
 - `Enable Event Sync`: `Yes`
 - `Magento API Token`: click `Generate new token`, then save config
-- `Freshworks Callback URL`: the URL shown by the Freshdesk app's `Reconnect Sync` action
+- `Freshworks Callback URL`: normally filled automatically by the Freshdesk app after app settings are saved
 - `Shared Secret`: optional, but recommended when the Freshdesk app is configured to verify signatures
 - `Send Customer Created Events`: `Yes`
 - `Send Customer Updated Events`: `Yes`, if contact updates should sync
@@ -93,9 +93,8 @@ In the Freshdesk app settings:
    - Create/update contact when customer is created or updated
    - Create ticket when customer is created
    - Create ticket when order is created
-4. Click `Reconnect Sync`.
 
-The Freshdesk app will try to install the callback URL into this Magento extension automatically. If automatic installation fails, copy the callback URL from the success message and paste it into Magento Admin under `Freshworks Callback URL`.
+When the app settings are saved, the Freshdesk app installs the callback URL into this Magento extension automatically. Use `Repair Sync` only if automatic installation fails, a store credential changed, or webhook delivery needs to be repaired. If automatic installation is not available, copy the callback URL from the `Repair Sync` success message and paste it into Magento Admin under `Freshworks Callback URL`.
 
 The Freshdesk app also supports native Magento admin/integration access tokens. When verifying a store, it first checks this extension's `/freshworks/ping` endpoint. If that endpoint is unavailable, it falls back to native Magento REST verification.
 
