@@ -1,0 +1,14 @@
+{
+  "name": "freshworks/magento2-connector",
+  "description": "Magento 2 companion extension for the Freshdesk Magento connector.",
+  "type": "magento2-module",
+  "license": "proprietary",
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Freshworks\\MagentoConnector\\": ""
+    }
+  }
+}

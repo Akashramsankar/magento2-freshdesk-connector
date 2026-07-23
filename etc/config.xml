@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <freshworks_connector>
+            <events>
+                <enabled>0</enabled>
+                <callback_url/>
+                <shared_secret/>
+                <send_customer_created>1</send_customer_created>
+                <send_customer_updated>1</send_customer_updated>
+                <send_order_created>1</send_order_created>
+            </events>
+        </freshworks_connector>
+    </default>
+</config>
