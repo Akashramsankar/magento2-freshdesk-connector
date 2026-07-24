@@ -5,6 +5,7 @@ namespace Freshworks\MagentoConnector\Model;
 use Freshworks\MagentoConnector\Api\ConnectorInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\GroupRepositoryInterface;
+use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrder;
@@ -60,6 +61,11 @@ class Connector implements ConnectorInterface
     private $configWriter;
 
     /**
+     * @var TypeListInterface
+     */
+    private $cacheTypeList;
+
+    /**
      * @var SearchCriteriaBuilder
      */
     private $searchCriteriaBuilder;
@@ -77,6 +83,7 @@ class Connector implements ConnectorInterface
         OrderManagementInterface $orderManagement,
         ShipmentRepository $shipmentRepository,
         WriterInterface $configWriter,
+        TypeListInterface $cacheTypeList,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         SortOrderBuilder $sortOrderBuilder
     ) {
@@ -87,6 +94,7 @@ class Connector implements ConnectorInterface
         $this->orderManagement = $orderManagement;
         $this->shipmentRepository = $shipmentRepository;
         $this->configWriter = $configWriter;
+        $this->cacheTypeList = $cacheTypeList;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->sortOrderBuilder = $sortOrderBuilder;
     }
@@ -283,6 +291,7 @@ class Connector implements ConnectorInterface
         if ($this->normalizeText($sharedSecret) !== '') {
             $this->configWriter->save(self::XML_PATH_SHARED_SECRET, $this->normalizeText($sharedSecret));
         }
+        $this->cleanConfigCache();
         return true;
     }
 
@@ -290,7 +299,13 @@ class Connector implements ConnectorInterface
     {
         $this->tokenValidator->validate();
         $this->configWriter->save(self::XML_PATH_CALLBACK_URL, '');
+        $this->cleanConfigCache();
         return true;
+    }
+
+    private function cleanConfigCache(): void
+    {
+        $this->cacheTypeList->cleanType('config');
     }
 
     private function freshSearchCriteriaBuilder(int $pageSize): SearchCriteriaBuilder
